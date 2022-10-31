@@ -1,0 +1,54 @@
+docker run -it \
+    -e POSTGRES_USER="root" \
+    -e POSTGRES_PASSWORD="root" \
+    -e POSTGRES_DB="covid_db" \
+    -v c:/Users/USER/Desktop/COVID-PIPELINE/covid_data:/var/lib/postgresql/data \
+    -p 5432:5432 \
+    --network=pg-network \
+    --name pg-database \
+    postgres:13
+
+
+docker run -it \
+    -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+    -e PGADMIN_DEFAULT_PASSWORD="root" \
+    -p 8080:80 \
+    --network=pg-network \
+    dpage/pgadmin4
+
+
+python sample.py \
+  --user=root \
+  --password=root \
+  --host=localhost \
+  --port=5432 \
+  --db=covid_db \
+  --table_name=covid_data \
+  --url="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/01-01-2021.csv"
+
+
+user = params.user
+password = params.password
+host = params.user
+port = params.port
+db = params.db
+table_name = params.table_name 
+url = params.url  
+
+docker build -t covid_ingest:v001 .
+
+docker run -it \
+  --network=pg-network \
+  covid_ingest:v1 \
+    --user=root \
+    --password=root \
+    --host=pg-database \
+    --port=5432 \
+    --db=covid_db \
+    --table_name=covid_data \
+    --url="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/01-01-2021.csv"
+
+
+
+
+
