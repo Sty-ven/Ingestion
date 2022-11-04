@@ -21,3 +21,5 @@ select
 
 
 from {{ source('staging', 'covid_data') }} 
+
+-- docker run -d -p 3000:3000 --network=pg-network --name metabase metabase/metabase

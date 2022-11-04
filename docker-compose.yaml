@@ -1,0 +1,29 @@
+version: '3'
+
+
+services:
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+
+    ports:
+      - '5438:5432'
+    volumes: 
+      - .:/var/lib/postgresql/data
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    environment: 
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=root 
+    ports:
+      - '8090:80'
+  
+networks:
+  default: 
+    name: pg-network
+    external: true
+        
